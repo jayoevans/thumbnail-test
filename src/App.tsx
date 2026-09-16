@@ -14,7 +14,7 @@ const FADE_MS = 220;
 
 export default function App() {
   const params = new URLSearchParams(location.search);
-  if (params.get("results") === RESULTS_KEY) return <Results />;
+  if (RESULTS_KEY && params.get("results") === RESULTS_KEY) return <Results />;
   return <Survey />;
 }
 

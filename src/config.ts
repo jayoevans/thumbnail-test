@@ -43,5 +43,5 @@ export const FAKE_PLAYING_MAX = 25_000;
 export const FAKE_RATING_MIN = 84;
 export const FAKE_RATING_MAX = 95;
 
-/** Secret query param for the results page: /?results=<RESULTS_KEY> */
-export const RESULTS_KEY = import.meta.env.VITE_RESULTS_KEY ?? "eh";
+/** Secret query param for the results page: /?results=<RESULTS_KEY>. Empty disables the page. */
+export const RESULTS_KEY = import.meta.env.VITE_RESULTS_KEY || "";
