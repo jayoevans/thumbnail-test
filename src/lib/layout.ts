@@ -1,29 +1,58 @@
 /**
- * Tile width the Roblox website would use at a given window width.
+ * Tile width the Roblox website uses for its "Recommended For You" row at a
+ * given window width, reconstructed from ~250 measurements taken while
+ * resizing the real page (Sept 2026).
  *
- * Measured on the real home page (window -> tile): 830 -> 250, 1230 -> 285,
- * 1614 -> 239, 1898 -> 241, 2550 -> 346. Roblox fits as many ~235px tiles as
- * the content area allows (max 6 per row) and stretches them to fill, so the
- * width is a sawtooth, not a smooth scale. The content area is the window
- * minus the sidebar and page padding (about 350px; 48px when the sidebar
- * collapses on narrow windows).
+ * The rule Roblox follows: tile = (window - offset) / columns, where the
+ * offset is page padding + sidebar + (columns - 1) * gap. The sidebar appears
+ * at about 1160px, which is why columns drop from 4 back to 3 there. Columns
+ * increase whenever the next column would still leave tiles ~235px wide, and
+ * the width is capped at 387px on very wide windows.
+ *
+ *   window     columns   offset
+ *   < 320      -         fixed 127px
+ *   320-769    2         62
+ *   770-1035   3         78 -> 90 (drifts slightly)
+ *   1036-1160  4         107
+ *   1161-1359  3         375   (sidebar now present)
+ *   1360-1611  4         400
+ *   1612-1869  5         425
+ *   1870-2809  6         450 -> 488 (drifts slightly)
+ *   > 2810     -         fixed 387px
  */
-export function robloxTileWidth(windowWidth: number): number {
-  const gap = 16;
-  const minTile = 232;
-  const maxCols = 6;
-  const maxTile = 360; // largest measured was 346 at 2550px; don't extrapolate to ultrawide
-  const content = windowWidth - (windowWidth < 1000 ? 48 : 350);
-  const cols = Math.min(maxCols, Math.max(1, Math.floor((content + gap) / (minTile + gap))));
-  const w = (content - (cols - 1) * gap) / cols;
-  // Our row is always 4 tiles wide; never let it overflow the window.
-  return Math.floor(Math.min(w, maxTile, (windowWidth - 2 * 24 - 3 * gap) / 4));
+export function robloxTileWidth(w: number): number {
+  let t: number;
+  if (w < 320) t = 127;
+  else if (w < 770) t = Math.max(137, (w - 62) / 2);
+  else if (w < 1036) t = (w - (78 + 0.045 * (w - 770))) / 3;
+  else if (w < 1161) t = (w - 107) / 4;
+  else if (w < 1360) t = (w - 375) / 3;
+  else if (w < 1612) t = (w - 400) / 4;
+  else if (w < 1870) t = (w - 425) / 5;
+  else if (w < 2810) t = (w - (450 + 0.042 * (w - 1910))) / 6;
+  else t = 387;
+  return Math.round(t);
+}
+
+/** Horizontal gap between tiles, matching Roblox. Keep in sync with styles.css. */
+export const TILE_GAP = 24;
+/** Side padding of our page. Keep in sync with styles.css. */
+const PAGE_PADDING = 24;
+
+/**
+ * Width for our tiles: Roblox's width, clamped so that our fixed row of 4
+ * always fits in the window (Roblox itself shows only 2-3 columns below
+ * ~1000px, so we cannot match it there).
+ */
+export function ourTileWidth(windowWidth: number): number {
+  const fit = (windowWidth - 2 * PAGE_PADDING - 3 * TILE_GAP) / 4;
+  return Math.floor(Math.min(robloxTileWidth(windowWidth), fit));
 }
 
 /** Keeps the --tile CSS variable in sync with the window width. */
 export function watchTileWidth(): () => void {
   const apply = () =>
-    document.documentElement.style.setProperty("--tile", `${robloxTileWidth(window.innerWidth)}px`);
+    document.documentElement.style.setProperty("--tile", `${ourTileWidth(window.innerWidth)}px`);
   apply();
   window.addEventListener("resize", apply);
   // ResizeObserver catches viewport changes that don't fire "resize"
