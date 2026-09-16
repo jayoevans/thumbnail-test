@@ -5,6 +5,7 @@ import { Results } from "./components/Results";
 import { Tile } from "./components/Tile";
 import { deviceId, lookupIp, newSessionId, sendGrid, sendSession } from "./lib/api";
 import { buildSessionGrids } from "./lib/grids";
+import { watchTileWidth } from "./lib/layout";
 import type { ManifestEntry, Tile as TileT } from "./types";
 
 type Stage = "loading" | "intro" | "grids" | "questions" | "done" | "error";
@@ -80,6 +81,9 @@ function Survey() {
         setStage("error");
       });
   }, []);
+
+  // Size tiles the way Roblox would at this window width.
+  useEffect(watchTileWidth, []);
 
   // Preload the next grid's images so the click timer is fair.
   useEffect(() => {
