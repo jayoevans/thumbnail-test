@@ -23,6 +23,7 @@ h1 { font-size: 24px; font-weight: 700; line-height: 1.25; margin: 0 0 8px; }
 p { margin: 0 0 14px; max-width: 46ch; }
 .muted { color: var(--text-dim); }
 .err { color: #ff6b6b; }
+pre.err { white-space: pre-wrap; font-size: 12px; text-align: left; }
 
 /* ---- Panels (intro, questions, thanks) ---- */
 .panel {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { GRIDS_PER_SESSION, RESULTS_KEY, TILES_PER_GRID } from "./config";
 import { Demographics, ThankYou } from "./components/Demographics";
 import { Results } from "./components/Results";
@@ -14,8 +14,32 @@ const FADE_MS = 220;
 
 export default function App() {
   const params = new URLSearchParams(location.search);
-  if (RESULTS_KEY && params.get("results") === RESULTS_KEY) return <Results />;
+  if (RESULTS_KEY && params.get("results") === RESULTS_KEY)
+    return (
+      <Boundary>
+        <Results />
+      </Boundary>
+    );
   return <Survey />;
+}
+
+/** Shows a render error on screen instead of a blank page. */
+class Boundary extends Component<{ children: ReactNode }, { error: string }> {
+  state = { error: "" };
+  static getDerivedStateFromError(e: unknown) {
+    return { error: e instanceof Error ? `${e.message}
+${e.stack ?? ""}` : String(e) };
+  }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div className="panel wide">
+        <h1>Results page crashed</h1>
+        <p className="muted">Reload the page and try again. If it keeps happening, send this:</p>
+        <pre className="err">{this.state.error}</pre>
+      </div>
+    );
+  }
 }
 
 function Survey() {
