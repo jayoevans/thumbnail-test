@@ -13,8 +13,15 @@ interface SessionRow {
   playsEH: string;
 }
 
-/** Minimal CSV parser (handles quoted fields with commas). */
+/**
+ * Minimal CSV/TSV parser (handles quoted fields). The delimiter is detected
+ * from the first line, so both a downloaded CSV and cells copied straight out
+ * of the sheet (tab-separated) work.
+ */
 function parseCSV(text: string): string[][] {
+  text = text.replace(/^\uFEFF/, "");
+  const firstLine = text.slice(0, text.search(/\r?\n|$/));
+  const delim = firstLine.includes("\t") ? "\t" : ",";
   const rows: string[][] = [];
   let row: string[] = [];
   let cell = "";
@@ -28,7 +35,7 @@ function parseCSV(text: string): string[][] {
       } else if (c === '"') q = false;
       else cell += c;
     } else if (c === '"') q = true;
-    else if (c === ",") {
+    else if (c === delim) {
       row.push(cell);
       cell = "";
     } else if (c === "\n" || c === "\r") {
@@ -49,6 +56,22 @@ function parseCSV(text: string): string[][] {
 function toObjects(rows: string[][]): Record<string, string>[] {
   const [head, ...body] = rows;
   return body.map((r) => Object.fromEntries(head.map((h, i) => [h.trim(), r[i] ?? ""])));
+}
+
+/** Parse a pasted sheet and check it has the columns we need. */
+function parseSheet(text: string, required: string[]): { rows: Record<string, string>[]; error: string } {
+  if (!text.trim()) return { rows: [], error: "" };
+  const rows = parseCSV(text);
+  const head = (rows[0] ?? []).map((h) => h.trim());
+  const missing = required.filter((c) => !head.includes(c));
+  if (missing.length) {
+    return {
+      rows: [],
+      error: `Missing column(s): ${missing.join(", ")}. Found: ${head.join(", ") || "nothing"}. ` +
+        "Paste the whole tab including its header row.",
+    };
+  }
+  return { rows: toObjects(rows), error: "" };
 }
 
 /**
@@ -98,23 +121,27 @@ export function Results() {
   const [playsEH, setPlaysEH] = useState("all");
   const [minMs, setMinMs] = useState(0);
 
-  const grids = useMemo<GridRow[]>(() => {
-    if (!gridsCsv.trim()) return [];
-    return toObjects(parseCSV(gridsCsv)).map((o) => ({
-      session: o.session,
-      shown: o.shown.split("|"),
-      clicked: o.clicked,
-      ms: Number(o.ms),
-    }));
-  }, [gridsCsv]);
+  const gridsParsed = useMemo(() => parseSheet(gridsCsv, ["session", "shown", "clicked", "ms"]), [gridsCsv]);
+  const grids = useMemo<GridRow[]>(
+    () =>
+      gridsParsed.rows
+        .map((o) => ({
+          session: o.session,
+          shown: o.shown.split("|").map((x) => x.trim()).filter(Boolean),
+          clicked: o.clicked.trim(),
+          ms: Number(o.ms) || 0,
+        }))
+        .filter((g) => g.shown.length > 0 && g.clicked),
+    [gridsParsed],
+  );
 
+  const sessionsParsed = useMemo(() => parseSheet(sessionsCsv, ["session", "age", "platform", "playsEH"]), [sessionsCsv]);
   const sessions = useMemo<Map<string, SessionRow>>(() => {
     const m = new Map<string, SessionRow>();
-    if (!sessionsCsv.trim()) return m;
-    for (const o of toObjects(parseCSV(sessionsCsv)))
+    for (const o of sessionsParsed.rows)
       m.set(o.session, { session: o.session, age: o.age, platform: o.platform, playsEH: o.playsEH });
     return m;
-  }, [sessionsCsv]);
+  }, [sessionsParsed]);
 
   const filtered = useMemo(() => {
     return grids.filter((g) => {
@@ -155,16 +182,19 @@ export function Results() {
     <div className="panel wide">
       <h1>Results</h1>
       <p className="muted">
-        Paste the two sheets (File → Download → CSV) below. Everything is computed in your browser.
+        Paste the two tabs below: either select all in the tab and copy, or File → Download → CSV.
+        Everything is computed in your browser.
       </p>
       <div className="two">
         <label>
           grids sheet
           <textarea value={gridsCsv} onChange={(e) => setGridsCsv(e.target.value)} placeholder="Paste grids CSV" />
+          {gridsParsed.error && <span className="err">{gridsParsed.error}</span>}
         </label>
         <label>
           sessions sheet
           <textarea value={sessionsCsv} onChange={(e) => setSessionsCsv(e.target.value)} placeholder="Paste sessions CSV" />
+          {sessionsParsed.error && <span className="err">{sessionsParsed.error}</span>}
         </label>
       </div>
 
