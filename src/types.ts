@@ -25,6 +25,8 @@ export interface GridRecord {
 
 export type AgeBand = "under13" | "13to17" | "18plus";
 export type Platform = "mobile" | "pc" | "console";
+export type RobloxFreq = "daily" | "monthly" | "rarely";
+export type EHRelation = "staff" | "regular" | "played" | "never";
 
 export interface SessionRecord {
   session: string;
@@ -32,7 +34,8 @@ export interface SessionRecord {
   ip: string;
   age: AgeBand;
   platform: Platform;
-  playsEH: boolean;
+  roblox: RobloxFreq;
+  eh: EHRelation;
   gridsCompleted: number;
   userAgent: string;
 }

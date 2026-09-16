@@ -132,7 +132,7 @@ function Survey() {
           You'll see {GRIDS_PER_SESSION} screens that look like the Roblox home page.
           On each one, tap the game you'd open first. Don't think about it, just go with your gut.
         </p>
-        <p className="muted">Takes about a minute. Three quick questions at the end.</p>
+        <p className="muted">Takes about a minute. Four quick questions at the end.</p>
         <button className="primary" onClick={() => setStage("grids")}>
           Start
         </button>

@@ -2,7 +2,7 @@
 
 A one-page site that shows respondents a fake Roblox "Recommended for you" row
 of 8 candidate thumbnails under random invented names and records which one
-they'd open. Ten rows per person, three demographic questions at the end. Rows
+they'd open. Ten rows per person, four demographic questions at the end. Rows
 go to a Google Sheet.
 
 Every tile is a candidate, so each click is a straight vote for one thumbnail
@@ -65,13 +65,16 @@ Cloudflare Pages also works (framework preset Vite, output `dist`, same two env 
 
 Open `https://<your-site>/?results=<VITE_RESULTS_KEY>`, download both sheet tabs as
 CSV and paste them in. You get exposures, clicks, click rate, and a Plackett-Luce
-strength per thumbnail (with a bootstrap range), filterable by age, platform and
-whether the person plays EH. Or just take the CSVs into Claude.
+strength per thumbnail (with a bootstrap range), filterable by age, how often they
+play Roblox, platform, and their relationship with EH (staff, regular, played before,
+never). Or just take the CSVs into Claude.
 
 Reading tips:
 - Overlapping 90% ranges are not distinguishable yet — collect more or treat them as a tier.
 - Use "ignore clicks faster than" ≈ 400 ms to drop mashed taps.
 - Click rate is out of 8 per screen, so 12.5% is average. Strength is the better column to sort by.
+- Your primary sample is people who play Roblox most days and have never (or only previously)
+  played EH. Use staff and regular players as a sanity check, not the deciding vote.
 
 ### Spotting spam
 

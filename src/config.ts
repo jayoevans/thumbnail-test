@@ -6,7 +6,7 @@
 export const SHEET_ENDPOINT = import.meta.env.VITE_SHEET_ENDPOINT ?? "";
 
 /** How many grids each respondent sees. */
-export const GRIDS_PER_SESSION = 10;
+export const GRIDS_PER_SESSION = 15;
 
 /**
  * Thumbnails per grid. Every tile is a test thumbnail, so each click is one

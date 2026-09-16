@@ -1,7 +1,19 @@
 [
   {
+    "id": "ambulanceloadingpov",
+    "file": "ambulanceloadingpov.webp"
+  },
+  {
     "id": "ambulancescene",
     "file": "ambulancescene.webp"
+  },
+  {
+    "id": "autobahnspikescene",
+    "file": "autobahnspikescene.webp"
+  },
+  {
+    "id": "bluelightscloseup",
+    "file": "bluelightscloseup.webp"
   },
   {
     "id": "busboardingscene",
@@ -16,40 +28,56 @@
     "file": "firefightingscene.webp"
   },
   {
+    "id": "firehydrantscene",
+    "file": "firehydrantscene.webp"
+  },
+  {
     "id": "firefightercatscene",
     "file": "firefightercatscene.webp"
+  },
+  {
+    "id": "firefighterlockerscene",
+    "file": "firefighterlockerscene.webp"
   },
   {
     "id": "floodedstreetscene",
     "file": "floodedstreetscene.webp"
   },
   {
-    "id": "harbourscene",
-    "file": "harbourscene.webp"
+    "id": "foggydawnscene",
+    "file": "foggydawnscene.webp"
   },
   {
     "id": "neonnightscene",
     "file": "neonnightscene.webp"
   },
   {
+    "id": "peppersprayscene",
+    "file": "peppersprayscene.webp"
+  },
+  {
     "id": "petrolstationscene",
     "file": "petrolstationscene.webp"
   },
   {
-    "id": "policebikescene",
-    "file": "policebikescene.webp"
+    "id": "policepitscene",
+    "file": "policepitscene.webp"
   },
   {
-    "id": "policecarcloseup",
-    "file": "policecarcloseup.webp"
-  },
-  {
-    "id": "policedogscene",
-    "file": "policedogscene.webp"
+    "id": "policeradiocloseup",
+    "file": "policeradiocloseup.webp"
   },
   {
     "id": "policestationscene",
     "file": "policestationscene.webp"
+  },
+  {
+    "id": "policetaser",
+    "file": "policetaser.webp"
+  },
+  {
+    "id": "radarspeedgun",
+    "file": "radarspeedgun.webp"
   },
   {
     "id": "roadworksscene",
@@ -66,5 +94,17 @@
   {
     "id": "teamphotoscene",
     "file": "teamphotoscene.webp"
+  },
+  {
+    "id": "towtruckscene",
+    "file": "towtruckscene.webp"
+  },
+  {
+    "id": "trafficconescene",
+    "file": "trafficconescene.webp"
+  },
+  {
+    "id": "waterrescuescene",
+    "file": "waterrescuescene.webp"
   }
 ]

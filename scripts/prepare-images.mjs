@@ -21,6 +21,7 @@ await fs.mkdir(out, { recursive: true });
 
 const files = (await fs.readdir(src)).filter((f) => OK.has(path.extname(f).toLowerCase())).sort();
 const manifest = [];
+const keep = new Set(["manifest.json", ".gitkeep"]);
 for (const f of files) {
   const stem = path.basename(f, path.extname(f));
   const id = stem.replace(/[^A-Za-z0-9_-]+/g, "-").toLowerCase();
@@ -30,7 +31,16 @@ for (const f of files) {
     .webp({ quality: 82 })
     .toFile(path.join(out, file));
   manifest.push({ id, file });
+  keep.add(file);
   console.log(`${f} -> ${file}`);
 }
 await fs.writeFile(path.join(out, "manifest.json"), JSON.stringify(manifest, null, 2));
 console.log(`${manifest.length} images`);
+
+// Remove outputs whose source image no longer exists.
+for (const f of await fs.readdir(out)) {
+  if (!keep.has(f)) {
+    await fs.unlink(path.join(out, f));
+    console.log(`removed stale ${f}`);
+  }
+}

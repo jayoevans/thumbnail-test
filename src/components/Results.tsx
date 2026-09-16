@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { AGES, EH_RELATIONS, PLATFORMS, ROBLOX_FREQS } from "./Demographics";
 
 interface GridRow {
   session: string;
@@ -10,7 +11,8 @@ interface SessionRow {
   session: string;
   age: string;
   platform: string;
-  playsEH: string;
+  roblox: string;
+  eh: string;
 }
 
 /**
@@ -113,12 +115,39 @@ function bootstrap(grids: GridRow[], items: string[], reps = 150) {
   });
 }
 
+function Filter({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { v: string; label: string }[];
+}) {
+  return (
+    <label>
+      {label}
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value="all">All</option>
+        {options.map((o) => (
+          <option key={o.v} value={o.v}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 export function Results() {
   const [gridsCsv, setGridsCsv] = useState("");
   const [sessionsCsv, setSessionsCsv] = useState("");
   const [age, setAge] = useState("all");
   const [platform, setPlatform] = useState("all");
-  const [playsEH, setPlaysEH] = useState("all");
+  const [roblox, setRoblox] = useState("all");
+  const [eh, setEh] = useState("all");
   const [minMs, setMinMs] = useState(0);
 
   const gridsParsed = useMemo(() => parseSheet(gridsCsv, ["session", "shown", "clicked", "ms"]), [gridsCsv]);
@@ -135,11 +164,11 @@ export function Results() {
     [gridsParsed],
   );
 
-  const sessionsParsed = useMemo(() => parseSheet(sessionsCsv, ["session", "age", "platform", "playsEH"]), [sessionsCsv]);
+  const sessionsParsed = useMemo(() => parseSheet(sessionsCsv, ["session", "age", "platform", "roblox", "eh"]), [sessionsCsv]);
   const sessions = useMemo<Map<string, SessionRow>>(() => {
     const m = new Map<string, SessionRow>();
     for (const o of sessionsParsed.rows)
-      m.set(o.session, { session: o.session, age: o.age, platform: o.platform, playsEH: o.playsEH });
+      m.set(o.session, { session: o.session, age: o.age, platform: o.platform, roblox: o.roblox, eh: o.eh });
     return m;
   }, [sessionsParsed]);
 
@@ -149,10 +178,11 @@ export function Results() {
       const s = sessions.get(g.session);
       if (age !== "all" && s?.age !== age) return false;
       if (platform !== "all" && s?.platform !== platform) return false;
-      if (playsEH !== "all" && s?.playsEH !== playsEH) return false;
+      if (roblox !== "all" && s?.roblox !== roblox) return false;
+      if (eh !== "all" && s?.eh !== eh) return false;
       return true;
     });
-  }, [grids, sessions, age, platform, playsEH, minMs]);
+  }, [grids, sessions, age, platform, roblox, eh, minMs]);
 
   const table = useMemo(() => {
     if (!filtered.length) return [];
@@ -199,32 +229,10 @@ export function Results() {
       </div>
 
       <div className="filters">
-        <label>
-          Age
-          <select value={age} onChange={(e) => setAge(e.target.value)}>
-            <option value="all">All</option>
-            <option value="under13">Under 13</option>
-            <option value="13to17">13 to 17</option>
-            <option value="18plus">18+</option>
-          </select>
-        </label>
-        <label>
-          Platform
-          <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
-            <option value="all">All</option>
-            <option value="mobile">Mobile</option>
-            <option value="pc">PC</option>
-            <option value="console">Console</option>
-          </select>
-        </label>
-        <label>
-          Plays EH
-          <select value={playsEH} onChange={(e) => setPlaysEH(e.target.value)}>
-            <option value="all">All</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        </label>
+        <Filter label="Age" value={age} onChange={setAge} options={AGES} />
+        <Filter label="Plays Roblox" value={roblox} onChange={setRoblox} options={ROBLOX_FREQS} />
+        <Filter label="Platform" value={platform} onChange={setPlatform} options={PLATFORMS} />
+        <Filter label="Relationship with EH" value={eh} onChange={setEh} options={EH_RELATIONS} />
         <label>
           Ignore clicks faster than (ms)
           <input type="number" value={minMs} min={0} step={100} onChange={(e) => setMinMs(Number(e.target.value))} />

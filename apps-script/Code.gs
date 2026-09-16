@@ -6,7 +6,7 @@
 // Creates two sheets on first write: "grids" and "sessions".
 
 var GRID_HEADERS = ["ts", "session", "grid", "shown", "names", "clicked", "clickedPos", "ms", "device", "ip"];
-var SESSION_HEADERS = ["ts", "session", "age", "platform", "playsEH", "gridsCompleted", "userAgent", "device", "ip"];
+var SESSION_HEADERS = ["ts", "session", "age", "platform", "roblox", "eh", "gridsCompleted", "userAgent", "device", "ip"];
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -23,7 +23,7 @@ function doPost(e) {
       ]);
     } else if (d.type === "session") {
       sheet(ss, "sessions", SESSION_HEADERS).appendRow([
-        ts, d.session, d.age, d.platform, String(d.playsEH), d.gridsCompleted, d.userAgent,
+        ts, d.session, d.age, d.platform, d.roblox, d.eh, d.gridsCompleted, d.userAgent,
         d.device || "", d.ip || "",
       ]);
     }
