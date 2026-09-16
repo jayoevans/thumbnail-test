@@ -1,0 +1,147 @@
+:root {
+  --bg: #232527;        /* Roblox web background */
+  --bg-raised: #2d2f31;
+  --line: #3b3d40;
+  --text: #f2f2f2;
+  --text-dim: #bdbebe;
+  --brand: #335fff;     /* Roblox blue */
+  --tile-w: 150px;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "Builder Sans", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  line-height: 1.5;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+h1 { font-size: 24px; font-weight: 700; line-height: 1.25; margin: 0 0 8px; }
+p { margin: 0 0 14px; max-width: 46ch; }
+.muted { color: var(--text-dim); }
+.err { color: #ff6b6b; }
+
+/* ---- Panels (intro, questions, thanks) ---- */
+.panel {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 56px 20px 40px;
+}
+.panel.wide { max-width: 1100px; }
+.panel.center { text-align: center; }
+.panel.center p { margin-left: auto; margin-right: auto; }
+
+.primary {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 12px 28px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+}
+.primary:disabled { opacity: 0.4; cursor: default; }
+.primary:focus-visible, .choice:focus-visible, .tile:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+fieldset { border: 0; padding: 0; margin: 22px 0 0; }
+legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+}
+.choice.on { border-color: var(--brand); background: rgba(51, 95, 255, 0.18); }
+
+/* ---- The fake Roblox home row ---- */
+.home {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+}
+.home-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+.home-title { font-size: 20px; font-weight: 700; }
+.home-progress { color: var(--text-dim); font-size: 13px; }
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 12px;
+}
+.row.hidden { opacity: 0; pointer-events: none; }
+@keyframes row-in { from { opacity: 0; } }
+.tile {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 8px;
+}
+.tile-img {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-raised);
+}
+.tile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile:hover .tile-img { box-shadow: 0 0 0 2px rgba(255,255,255,0.35); }
+.tile-name {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tile-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.tile-meta span { display: inline-flex; align-items: center; gap: 3px; }
+
+@media (max-width: 480px) {
+  :root { --tile-w: 140px; }
+  .row { grid-template-columns: repeat(2, 1fr); }
+  .home { padding: 16px 12px 32px; }
+}
+
+/* ---- Results ---- */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.two label, .filters label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--text-dim); }
+textarea, select, input {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+}
+textarea { height: 120px; resize: vertical; }
+.filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+th { color: var(--text-dim); font-weight: 500; }
+.mini { width: 64px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 8px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tile-img { transition: box-shadow 120ms ease; }
+  .row { transition: opacity 220ms ease; animation: row-in 220ms ease; }
+}

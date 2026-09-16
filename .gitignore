@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+raw-images/*
+!raw-images/.gitkeep
+.DS_Store
+*.tsbuildinfo
+.idea
