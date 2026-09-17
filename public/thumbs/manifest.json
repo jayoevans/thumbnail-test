@@ -106,5 +106,25 @@
   {
     "id": "waterrescuescene",
     "file": "waterrescuescene.webp"
+  },
+  {
+    "id": "current-autobahn",
+    "file": "current-autobahn.webp"
+  },
+  {
+    "id": "current-helicopter",
+    "file": "current-helicopter.webp"
+  },
+  {
+    "id": "current-jewellery",
+    "file": "current-jewellery.webp"
+  },
+  {
+    "id": "current-petroltruck",
+    "file": "current-petroltruck.webp"
+  },
+  {
+    "id": "current-sek",
+    "file": "current-sek.webp"
   }
 ]
