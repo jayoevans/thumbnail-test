@@ -19,29 +19,37 @@ export const TILES_PER_GRID = 8;
 /**
  * Neutral invented game names for the tiles. A random name is assigned to
  * each tile on every grid, so no name is tied to any thumbnail.
+ *
+ * Keep them bland and similar: place-style names with the same two suffixes,
+ * nothing that describes content (no "Autobahn", "Blaulicht", "Rettung"),
+ * so the name can't favour a thumbnail that happens to match it.
  */
 export const FAKE_NAMES = [
   "Nordstadt RP",
   "Hafen City",
-  "Rettungsdienst Nord",
-  "Küstenwache",
-  "Rettung Nord",
-  "Blaulicht Stadt",
-  "Elbe Roleplay",
-  "Metropolis Nord",
-  "Autobahn Life",
-  "Nordlicht RP",
-  "Stadtwache",
   "Hansa City",
+  "Altstadt RP",
+  "Elbe City",
+  "Weststadt RP",
+  "Neustadt City",
+  "Seestadt RP",
+  "Oststadt City",
+  "Holstein RP",
+  "Marktstadt City",
+  "Südstadt RP",
 ];
 
-/** Player-count band shown on tiles (Roblox shows e.g. "12.3K playing"). */
-export const FAKE_PLAYING_MIN = 2_000;
-export const FAKE_PLAYING_MAX = 25_000;
+/**
+ * Player-count band shown on tiles (Roblox shows e.g. "10.4K playing").
+ * Deliberately narrow so the numbers read as "all mid-size" rather than
+ * giving any tile a popularity edge.
+ */
+export const FAKE_PLAYING_MIN = 7_000;
+export const FAKE_PLAYING_MAX = 9_000;
 
-/** Rating band shown on tiles. */
-export const FAKE_RATING_MIN = 84;
-export const FAKE_RATING_MAX = 95;
+/** Rating band shown on tiles, also narrow. */
+export const FAKE_RATING_MIN = 89;
+export const FAKE_RATING_MAX = 92;
 
 /** Secret query param for the results page: /?results=<RESULTS_KEY>. Empty disables the page. */
 export const RESULTS_KEY = import.meta.env.VITE_RESULTS_KEY || "";
